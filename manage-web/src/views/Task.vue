@@ -2,11 +2,7 @@
     <div class="container">
         <h1 class="text-center">Task List</h1>
         <div class="text-center">
-            <h2>新規作成</h2>
-            <input type="text" v-model="newTask.name">
-            <input type="text" v-model="newTask.email">
-            <input type="text" v-model="newTask.task">
-            <input type="submit" value="送信" @click="createTask()"> 
+            <v-btn @click="openCreateDialog()">+タスクの追加</v-btn>
         </div>
         <table class="table table-striped">
             <thead>
@@ -28,6 +24,44 @@
                 </tr>
             </tbody>
         </table>
+
+
+    <!-- 新規作成ダイアログ -->
+    <v-dialog
+      v-model="createDialog"
+      persistent
+      max-width="600px"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">タスクの追加</span>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field label="名前" v-model="newTask.name"></v-text-field>
+          <v-text-field label="メールアドレス" v-model="newTask.email"></v-text-field>
+          <v-text-field label="タスク" v-model="newTask.task"></v-text-field>
+          
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="createDialog = false"
+          >
+            キャンセル
+          </v-btn>
+          <v-btn
+            color="blue darken-1"
+            text
+            @click="createTask()"
+          >
+            保存
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    
     </div>
 </template>
 
@@ -43,7 +77,8 @@ export default{
                 name: '',
                 email: '',
                 task: '',
-            }
+            },
+            createDialog: false,
         }
     },
     methods: {
@@ -66,6 +101,7 @@ export default{
                     vm.newTask.name = ''
                     vm.newTask.email = ''
                     vm.newTask.task = ''
+                    vm.createDialog = false
                 }).catch(() =>{
 
                 })
@@ -79,6 +115,10 @@ export default{
 
                 })
         },
+        openCreateDialog(){
+            console.log("aa")
+            this.createDialog = true
+        }
     },
     created() {
         this.getTasks()
