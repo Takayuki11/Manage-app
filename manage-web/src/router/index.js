@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Task from '../views/Task.vue'
-import Edit from '../views/Edit.vue'
 
 Vue.use(VueRouter)
 
@@ -24,11 +23,6 @@ const routes = [
     path: '/tasks',
     name: 'Task',
     component: Task
-  },
-  {
-    path: '/tasks/edit/:taskId',
-    name: 'Edit',
-    component: Edit
   },
   {
     path: '*',

@@ -37,13 +37,13 @@ public class TaskController {
         Optional<Task> target = taskRepository.findById(id);
         if(target.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//            404を返す
         } else {
             Task editTask = target.get();
             editTask.setEmail(task.getEmail());
             editTask.setName(task.getName());
             editTask.setTask(task.getTask());
             taskRepository.save(editTask);
+            System.out.print(editTask);
             return new ResponseEntity<Task>(HttpStatus.OK);
         }
     }
