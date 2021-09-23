@@ -18,7 +18,7 @@ public class TaskController {
     private TaskRepository taskRepository;
 
     @GetMapping("/tasks")
-    public List<Task> fetchTask(){
+    public List<Task> getTasks(){
         return taskRepository.findTasks();
     }
 
@@ -39,11 +39,10 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             Task editTask = target.get();
-            editTask.setEmail(task.getEmail());
-            editTask.setName(task.getName());
-            editTask.setTask(task.getTask());
+            editTask.setTask_name(task.getTask_name());
+            editTask.setTask_note(task.getTask_note());
             taskRepository.save(editTask);
-            System.out.print(editTask);
+
             return new ResponseEntity<Task>(HttpStatus.OK);
         }
     }

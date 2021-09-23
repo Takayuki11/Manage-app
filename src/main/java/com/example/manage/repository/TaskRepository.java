@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    @Query(value = "SELECT * FROM task ORDER BY id ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM tasks ORDER BY id ASC", nativeQuery = true)
     public List<Task>findTasks();
 }

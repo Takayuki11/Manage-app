@@ -2,23 +2,21 @@
     <div class="container">
         <h1 class="text-center">Task List</h1>
         <div class="text-center">
-            <v-btn @click="openCreateDialog()">+タスクの追加</v-btn>
+            <v-btn @click="openCreateDialog(); resetTaskData()">+タスクの追加</v-btn>
         </div>
         <table class="table table-striped">
             <thead>
                 <th>Id</th>
                 <th>name</th>
-                <th>email</th>
-                <th>Task</th>
+                <th>details</th>
                 <th></th>
                 <th></th>
             </thead>
             <tbody>
                 <tr v-for="task in tasks" :key="task.id">
                     <td>{{ task.id }}</td>
-                    <td>{{ task.name }}</td>
-                    <td>{{ task.email }}</td>
-                    <td>{{ task.task }}</td>
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.task_note }}</td>
                     <td @click="openEditor(); getTask(task.id);"> <button>編集</button></td>
                     <td><button @click="deleteTask(task.id)">削除</button></td>
                 </tr>
@@ -37,9 +35,8 @@
                     <span class="text-h5">タスクの追加</span>
                 </v-card-title>
                 <v-card-text>
-                <v-text-field label="名前" v-model="newTask.name"></v-text-field>
-                <v-text-field label="メールアドレス" v-model="newTask.email"></v-text-field>
-                <v-text-field label="タスク" v-model="newTask.task"></v-text-field>
+                <v-text-field label="名前" v-model="newTask.task_name"></v-text-field>
+                <v-text-field label="タスク" v-model="newTask.task_note"></v-text-field>
                 
                 </v-card-text>
                 <v-card-actions>
@@ -73,9 +70,8 @@
                     <span class="text-h5">タスクの編集</span>
                 </v-card-title>
                 <v-card-text>
-                <v-text-field label="名前" v-model="newTask.name"></v-text-field>
-                <v-text-field label="メールアドレス" v-model="newTask.email"></v-text-field>
-                <v-text-field label="タスク" v-model="newTask.task"></v-text-field>
+                <v-text-field label="名前" v-model="newTask.task_name"></v-text-field>
+                <v-text-field label="タスク" v-model="newTask.task_note"></v-text-field>
                 
                 </v-card-text>
                 <v-card-actions>
@@ -111,9 +107,8 @@ export default{
             tasks: [],
             newTask: {
                 id: '',
-                name: '',
-                email: '',
-                task: '',
+                task_name: '',
+                task_note: '',
             },
             createDialog: false,
             editDialog: false,
@@ -129,22 +124,18 @@ export default{
             const vm = this;
             TaskService.getTask(taskId).then((response) => {
                 vm.newTask = response.data
-                console.log(vm.newTask.id)
             })
         },
         createTask(){
             const vm = this;
             let params = {
-                name: this.newTask.name,
-                email: this.newTask.email,
-                task: this.newTask.task
+                name: this.newTask.task_name,
+                task: this.newTask.task_note
             }
             TaskService.createTask(params)
                 .then(() => {
                     vm.getTasks()
-                    vm.newTask.name = ''
-                    vm.newTask.email = ''
-                    vm.newTask.task = ''
+                    vm.resetTaskData()
                     vm.createDialog = false
                 }).catch(() =>{
 
@@ -153,17 +144,14 @@ export default{
         editTask(taskId){
             const vm = this
             let params = {
-                name: this.newTask.name,
-                email: this.newTask.email,
-                task: this.newTask.task
+                name: this.newTask.task_name,
+                task: this.newTask.task_note
             }
             TaskService.editTask(taskId, params)
                 .then(() => {
                     vm.editDialog = false
                     vm.getTasks()
-                    vm.newTask.name = ''
-                    vm.newTask.email = ''
-                    vm.newTask.task = ''
+                    this.resetTaskData()
                 }).catch(() => {
 
                 })
@@ -182,6 +170,10 @@ export default{
         },
         openEditor(){
             this.editDialog = true
+        },
+        resetTaskData(){
+            this.newTask.task_name = ''
+            this.newTask.task_note = ''
         }
     },
     created() {
