@@ -4,6 +4,7 @@ import router from './router'
 import vuetify from '@/plugins/vuetify'
 // import axios from 'axios'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import '@mdi/font/css/materialdesignicons.css'
 
 Vue.config.productionTip = false
 // 以下の記述でthis.$axiosでどこでも使えるので他でimportする必要がなくなる
