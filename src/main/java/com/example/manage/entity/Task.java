@@ -26,8 +26,10 @@ public class Task {
     private Date task_limit;
     @Column
     private String task_note;
-    @Column
-    private boolean task_completed;
+    @Column(name = "task_processing")
+    private boolean isProcessing;
+    @Column(name = "task_completed")
+    private boolean isCompleted;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

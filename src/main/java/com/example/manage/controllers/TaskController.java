@@ -12,7 +12,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("http://localhost:8081/")
 public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
@@ -41,6 +40,8 @@ public class TaskController {
             Task editTask = target.get();
             editTask.setTask_name(task.getTask_name());
             editTask.setTask_note(task.getTask_note());
+            editTask.setProcessing(task.isProcessing());
+            editTask.setCompleted(task.isCompleted());
             taskRepository.save(editTask);
 
             return new ResponseEntity<Task>(HttpStatus.OK);

@@ -1,18 +1,19 @@
 <template>
     <v-app>
-      <nav id="nav">
-        <router-link to="/">Home</router-link>
-        <router-link to="/tasks">Tasks</router-link>
-      </nav>
-      <router-view/>
+      <Header></Header>
+      <v-content>
+        <router-view/>
+      </v-content>
     </v-app>
 </template>
 
 <script>
+import Header from './components/Header.vue'
 
 export default {
   name: 'App',
   components: {
+    Header
   }  
 }
 </script>
@@ -23,18 +24,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
