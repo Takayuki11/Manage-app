@@ -7,30 +7,29 @@
             <v-row>
                 <v-col cols="12" sm="4" class="each-box">
                     <h2 class="text-center">タスク一覧</h2>
-                    <!-- @dragstartならtaskにデータが入っていない -->
-                    <!-- @dragendならthis.task.idがからのためPUT http://localhost:8080/api/tasks/ 405 のエラー *うまく行くときもある -->
-                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="p-0" id="incomplete" @end="onEnd($event)">
-                        <li v-for="task in incomplete_tasks" :key="task.id" class="each-task"  @dragstart="setCurrentTask(task)">
-                            <span class="each-task-name">{{ task.task_name }}</span>
+                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="incomplete p-0" @end="onEnd($event)">
+                        <li v-for="task in incompleteTasks" :key="task.id"  :id="task.id" @dragstart="setCurrentTask(task)"
+                        >
+                            <span class="each-task-name">{{ task.taskName }}</span>
                             <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
-                            <!-- {{ task.task_note }} -->
+                            <!-- {{ task.taskNote }} -->
                         </li>
                     </draggable>
                 </v-col>
                 <v-col cols="12" sm="4" class="each-box">
                     <h2 class="text-center">進行中</h2>
-                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="p-0" id="processing" @end="onEnd($event)">
-                        <li v-for="task in processing_tasks" :key="task.id"  class="each-task" @dragstart="setCurrentTask(task)">
-                            <span class="each-task-name">{{ task.task_name }}</span>
+                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="processing p-0" @end="onEnd($event)">
+                        <li v-for="task in processingTasks" :key="task.id" :id="task.id" @dragstart="setCurrentTask(task)">
+                            <span class="each-task-name">{{ task.taskName }}</span>
                             <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
                         </li>
                     </draggable>
                 </v-col>
                 <v-col cols="12" sm="4" class="each-box">
                     <h2 class="text-center">完了</h2>
-                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="p-0" id="completed" @end="onEnd($event)">
-                        <li v-for="task in completed_tasks" :key="task.id"  class="each-task"  @dragstart="setCurrentTask(task)">
-                            <span class="each-task-name">{{ task.task_name }}</span>
+                    <draggable tag="ul" :options="{group: 'ITEMS'}" class="completed p-0" @end="onEnd($event)">
+                        <li v-for="task in completedTasks" :key="task.id" :id="task.id" @dragstart="setCurrentTask(task)">
+                            <span class="each-task-name">{{ task.taskName }}</span>
                             <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
                         </li>
                     </draggable>
@@ -49,8 +48,8 @@
                     <span class="text-h5">タスクの追加</span>
                 </v-card-title>
                 <v-card-text>
-                <v-text-field label="名前" v-model="task.task_name"></v-text-field>
-                <v-text-field label="詳細" v-model="task.task_note"></v-text-field>
+                <v-text-field label="名前" v-model="task.taskName"></v-text-field>
+                <v-text-field label="詳細" v-model="task.taskNote"></v-text-field>
                 
                 </v-card-text>
                 <v-card-actions>
@@ -84,8 +83,8 @@
                     <span class="text-h5">タスクの編集</span>
                 </v-card-title>
                 <v-card-text>
-                <v-text-field label="名前" v-model="task.task_name"></v-text-field>
-                <v-text-field label="詳細" v-model="task.task_note"></v-text-field>
+                <v-text-field label="名前" v-model="task.taskName"></v-text-field>
+                <v-text-field label="詳細" v-model="task.taskNote"></v-text-field>
                 
                 </v-card-text>
                 <v-card-actions>
@@ -122,24 +121,37 @@ export default{
     },
     data(){
         return {
-            tasks: [],
+            incompleteTasks: [],
+            processingTasks: [],
+            completedTasks: [],
             task: {
                 id: '',
-                task_name: '',
-                task_note: '',
-                task_limit: null,
-                processing: null,
-                completed: null
+                taskName: '',
+                taskNote: '',
+                taskLimit: null,
+                taskStatus: '',
+                sortNumber: ''
             },
             createDialog: false,
             editDialog: false,
+            draggingItem: null
         }
     },
     methods: {
-        getTasks(){
+        getIncompleteTasks(){
             TaskService.getTasks().then((response) => {
-                this.tasks = response.data
+                this.incompleteTasks = response.data
             });
+        },
+        getProcessingTasks(){
+            TaskService.getProcessingTasks().then((response) => {
+                this.processingTasks = response.data
+            })
+        },
+        getCompletedTasks(){
+            TaskService.getCompletedTasks().then((response) => {
+                this.completedTasks = response.data
+            })
         },
         getTask(taskId){
             const vm = this;
@@ -150,12 +162,12 @@ export default{
         createTask(){
             const vm = this;
             let params = {
-                task_name: this.task.task_name,
-                task_note: this.task.task_note
+                taskName: this.task.taskName,
+                taskNote: this.task.taskNote
             }
             TaskService.createTask(params)
                 .then(() => {
-                    vm.getTasks()
+                    vm.getIncompleteTasks()
                     vm.resetTaskData()
                     vm.createDialog = false
                 }).catch(() =>{
@@ -165,15 +177,16 @@ export default{
         editTask(taskId){
             const vm = this
             let params = {
-                task_name: this.task.task_name,
-                task_note: this.task.task_note,
-                processing: this.task.processing,
-                completed: this.task.completed
+                taskName: this.task.taskName,
+                taskNote: this.task.taskNote,
+                taskStatus: this.task.taskStatus
             }
             TaskService.editTask(taskId, params)
                 .then(() => {
                     vm.editDialog = false
-                    vm.getTasks()
+                    vm.getIncompleteTasks()
+                    vm.getProcessingTasks()
+                    vm.getCompletedTasks()
                 }).catch(() => {
 
                 })
@@ -182,7 +195,7 @@ export default{
             const getTasks = this.getTasks;
             TaskService.deleteTask(taskId)
                 .then(() =>{
-                    getTasks()
+                    getIncompleteTasks()
                 }).catch(() => {
 
                 })
@@ -195,50 +208,43 @@ export default{
         },
         resetTaskData(){
             this.task.id = ''
-            this.task.task_name = ''
-            this.task.task_note = ''
+            this.task.taskName = ''
+            this.task.taskNote = ''
         },     
         setCurrentTask(currrentTask){
             this.task = currrentTask
         },
         // vuedraggableのイベント
        onEnd(event){
-            const incomplete = document.getElementById("incomplete");
-            const processing = document.getElementById("processing");
-            const completed = document.getElementById("completed");
-        // $ref = "incomplete"
-            if(event.to == incomplete) {
-                this.task.processing = false
-                this.task.completed = false
-                this.editTask(this.task.id)
+            let taskStatus = event.to.classList[0]
+            this.task.taskStatus = taskStatus
+
+            let toParams  = []
+            let fromParams = []
+
+            for(let i = 0; i < event.to.childNodes.length; i++){
+                toParams.push(Number(event.to.childNodes[i].id))
             }
-            if(event.to == processing) {
-                this.task.processing = true
-                this.task.completed = false
-                this.editTask(this.task.id)
+            for(let i = 0; i < event.from.childNodes.length; i++){
+                fromParams.push(Number(event.from.childNodes[i].id))
             }
-            if(event.to == completed){
-                this.task.processing = false
-                this.task.completed = true
-                this.editTask(this.task.id)
-                
-            }
+
+            const vm = this
+            TaskService.changeSortNumber(fromParams, toParams, this.task)
+            .then(() => {
+                vm.getIncompleteTasks()
+                vm.getProcessingTasks()
+                vm.getCompletedTasks()
+            })
        },
-       
     },
     computed: {
-        incomplete_tasks(){
-            return this.tasks.filter(task => task.processing == false && task.completed == false)
-        },
-        processing_tasks(){
-            return this.tasks.filter(task => task.processing == true && task.completed == false)
-        },
-        completed_tasks(){
-            return this.tasks.filter(task => task.completed == true && task.processing == false)
-        }
+        
     },
     created() {
-        this.getTasks()
+        this.getIncompleteTasks()
+        this.getProcessingTasks()
+        this.getCompletedTasks()
     }
 }
 </script>
@@ -255,6 +261,5 @@ export default{
 .each-box {
     border: solid 1px black;
     border-radius: 5px;
-    /* margin: 5px; */
 }
 </style>

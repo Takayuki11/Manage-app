@@ -17,19 +17,19 @@ import java.util.Date;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(nullable = false)
-    private long user_id;
-    @Column(nullable = false)
-    private String task_name;
-    @Column
-    private Date task_limit;
-    @Column
-    private String task_note;
-    @Column(name = "task_processing")
-    private boolean isProcessing;
-    @Column(name = "task_completed")
-    private boolean isCompleted;
+    private int id;
+    @Column(name = "user_id", nullable = false)
+    private int userId;
+    @Column(name = "task_name", nullable = false)
+    private String taskName;
+    @Column(name = "task_limit")
+    private Date taskLimit;
+    @Column(name = "task_note")
+    private String taskNote;
+    @Column(name = "task_status")
+    private String taskStatus;
+    @Column(name = "sort_number")
+    private int sortNumber;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

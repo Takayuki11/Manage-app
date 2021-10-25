@@ -4,7 +4,15 @@ const TASK_API_BASE_URL = 'http://localhost:8080/api/tasks'
 
 class TaskService{
     getTasks(){
-        return axios.get(TASK_API_BASE_URL);
+        return axios.get(TASK_API_BASE_URL)
+    }
+
+    getProcessingTasks(){
+        return axios.get(TASK_API_BASE_URL + "/processing")
+    }
+
+    getCompletedTasks(){
+        return axios.get(TASK_API_BASE_URL + "/completed")
     }
 
     getTask(taskId){
@@ -23,7 +31,12 @@ class TaskService{
 
     deleteTask(taskId){
         const url = TASK_API_BASE_URL + "/" + taskId
-        return axios.delete(url);
+        return axios.delete(url)
+    }
+
+    changeSortNumber(fromParams, toParams, task){
+        const url = TASK_API_BASE_URL + "/sort?from=" + fromParams + "&to=" + toParams
+        return axios.put(url, task)
     }
 }
 

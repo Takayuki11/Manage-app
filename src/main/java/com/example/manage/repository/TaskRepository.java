@@ -6,7 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
-    @Query(value = "SELECT * FROM tasks ORDER BY id ASC", nativeQuery = true)
+public interface TaskRepository extends JpaRepository<Task, Integer> {
+    @Query(value = "SELECT * FROM tasks WHERE task_status = 'incomplete' ORDER BY sort_number ASC", nativeQuery = true)
     public List<Task>findTasks();
+
+    @Query(value = "SELECT * FROM tasks WHERE task_status = 'processing' ORDER BY sort_number ASC", nativeQuery = true)
+    public List<Task>findProcessingTasks();
+
+    @Query(value = "SELECT * FROM tasks WHERE task_status = 'completed' ORDER BY sort_number ASC", nativeQuery = true)
+    public List<Task>findCompletedTasks();
 }
