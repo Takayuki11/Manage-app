@@ -8,10 +8,9 @@
                 <v-col cols="12" sm="4" class="each-box">
                     <h2 class="text-center">タスク一覧</h2>
                     <draggable tag="ul" :options="{group: 'ITEMS'}" class="incomplete p-0" @end="onEnd($event)">
-                        <li v-for="task in incompleteTasks" :key="task.id"  :id="task.id" @dragstart="setCurrentTask(task)"
-                        >
+                        <li v-for="task in incompleteTasks" :key="task.id"  :id="task.id" @dragstart="setCurrentTask(task)">
                             <span class="each-task-name">{{ task.taskName }}</span>
-                            <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
+                            <v-icon @click="openEditor(); getTask(task.id); setCurrentTask(task)" class="each-edit-icon">mdi-pencil</v-icon>
                             <!-- {{ task.taskNote }} -->
                         </li>
                     </draggable>
@@ -21,7 +20,7 @@
                     <draggable tag="ul" :options="{group: 'ITEMS'}" class="processing p-0" @end="onEnd($event)">
                         <li v-for="task in processingTasks" :key="task.id" :id="task.id" @dragstart="setCurrentTask(task)">
                             <span class="each-task-name">{{ task.taskName }}</span>
-                            <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
+                            <v-icon @click="openEditor(); getTask(task.id); setCurrentTask(task)" class="each-edit-icon">mdi-pencil</v-icon>
                         </li>
                     </draggable>
                 </v-col>
@@ -30,7 +29,7 @@
                     <draggable tag="ul" :options="{group: 'ITEMS'}" class="completed p-0" @end="onEnd($event)">
                         <li v-for="task in completedTasks" :key="task.id" :id="task.id" @dragstart="setCurrentTask(task)">
                             <span class="each-task-name">{{ task.taskName }}</span>
-                            <v-icon @click="openEditor(); getTask(task.id)" class="each-edit-icon">mdi-pencil</v-icon>
+                            <v-icon @click="openEditor(); getTask(task.id); setCurrentTask(task)" class="each-edit-icon">mdi-pencil</v-icon>
                         </li>
                     </draggable>
                 </v-col>
@@ -128,13 +127,12 @@ export default{
                 id: '',
                 taskName: '',
                 taskNote: '',
-                taskLimit: null,
                 taskStatus: '',
-                sortNumber: ''
+                sortNumber: '',
+                scheduleStatus: ''
             },
             createDialog: false,
             editDialog: false,
-            draggingItem: null
         }
     },
     methods: {
@@ -176,12 +174,7 @@ export default{
         },
         editTask(taskId){
             const vm = this
-            let params = {
-                taskName: this.task.taskName,
-                taskNote: this.task.taskNote,
-                taskStatus: this.task.taskStatus
-            }
-            TaskService.editTask(taskId, params)
+            TaskService.editTask(taskId, this.task)
                 .then(() => {
                     vm.editDialog = false
                     vm.getIncompleteTasks()
@@ -192,10 +185,10 @@ export default{
                 })
         },
         deleteTask(taskId){
-            const getTasks = this.getTasks;
+            const getTasks = this.getIncompleteTasks;
             TaskService.deleteTask(taskId)
                 .then(() =>{
-                    getIncompleteTasks()
+                    getTasks()
                 }).catch(() => {
 
                 })
@@ -217,6 +210,11 @@ export default{
         // vuedraggableのイベント
        onEnd(event){
             let taskStatus = event.to.classList[0]
+            if(taskStatus == 'completed'){
+                this.task.scheduleStatus = true
+            } else {
+                this.task.scheduleStatus = false
+            }
             this.task.taskStatus = taskStatus
 
             let toParams  = []
@@ -228,18 +226,15 @@ export default{
             for(let i = 0; i < event.from.childNodes.length; i++){
                 fromParams.push(Number(event.from.childNodes[i].id))
             }
-
+            
             const vm = this
-            TaskService.changeSortNumber(fromParams, toParams, this.task)
+            TaskService.sortTasksWithSchedule(fromParams, toParams, this.task)
             .then(() => {
                 vm.getIncompleteTasks()
                 vm.getProcessingTasks()
                 vm.getCompletedTasks()
             })
-       },
-    },
-    computed: {
-        
+       }
     },
     created() {
         this.getIncompleteTasks()

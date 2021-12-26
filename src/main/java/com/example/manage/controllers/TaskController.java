@@ -1,5 +1,6 @@
 package com.example.manage.controllers;
 
+import com.example.manage.Scheduler.TaskCron;
 import com.example.manage.Service.TaskService;
 import com.example.manage.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +17,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private TaskCron taskScheduler;
 
     @GetMapping("/tasks")
     public List<Task> getTasks(){
@@ -52,6 +55,7 @@ public class TaskController {
             Task editTask = target.get();
             editTask.setTaskName(task.getTaskName());
             editTask.setTaskNote(task.getTaskNote());
+            editTask.setScheduleStatus(task.isScheduleStatus());
             taskService.save(editTask);
 
             return new ResponseEntity<Task>(HttpStatus.OK);
@@ -68,6 +72,7 @@ public class TaskController {
         } else {
             Task editTask = target.get();
             editTask.setTaskStatus(task.getTaskStatus());
+            editTask.setScheduleStatus(task.isScheduleStatus());
             taskService.save(editTask);
 
             return new ResponseEntity<Task>(HttpStatus.OK);

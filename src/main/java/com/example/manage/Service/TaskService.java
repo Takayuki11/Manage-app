@@ -70,5 +70,13 @@ public class TaskService {
         taskRepository.deleteById(id);
     }
 
+    public void deleteOnlyScheduledTasks(){
+        for(Task task : taskList.completedTaskList){
+            if(task.isScheduleStatus() == true){
+                taskRepository.delete(task);
+            }
+        }
+    }
+
 
 }

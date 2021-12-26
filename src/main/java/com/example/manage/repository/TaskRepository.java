@@ -3,6 +3,7 @@ package com.example.manage.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.manage.entity.Task;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

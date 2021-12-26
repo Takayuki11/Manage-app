@@ -24,9 +24,9 @@ class TaskService{
         return axios.post(url, params)
     }
 
-    editTask(taskId, params){
+    editTask(taskId, task){
         const url = TASK_API_BASE_URL + "/" + taskId
-        return axios.put(url, params)
+        return axios.put(url, task)
     }
 
     deleteTask(taskId){
@@ -34,7 +34,7 @@ class TaskService{
         return axios.delete(url)
     }
 
-    changeSortNumber(fromParams, toParams, task){
+    sortTasksWithSchedule(fromParams, toParams, task){
         const url = TASK_API_BASE_URL + "/sort?from=" + fromParams + "&to=" + toParams
         return axios.put(url, task)
     }

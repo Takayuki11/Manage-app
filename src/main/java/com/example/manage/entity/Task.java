@@ -22,14 +22,14 @@ public class Task {
     private int userId;
     @Column(name = "task_name", nullable = false)
     private String taskName;
-    @Column(name = "task_limit")
-    private Date taskLimit;
     @Column(name = "task_note")
     private String taskNote;
     @Column(name = "task_status")
     private String taskStatus;
     @Column(name = "sort_number")
     private int sortNumber;
+    @Column(name = "schedule_status")
+    private boolean scheduleStatus;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
