@@ -1,55 +1,39 @@
 <template>
     <div class="container">
-        <h1 >サインアップ</h1>
-        <v-text-field label="名前" v-model="name"></v-text-field>
+        <h1>ログイン</h1>
         <v-text-field label="メールアドレス" v-model="email"></v-text-field>
         <v-text-field label="パスワード" type="password" v-model="password"></v-text-field>
 
-        <v-btn @click="signUp()">Sign up</v-btn>
+        <v-btn @click="login()">Login</v-btn>
     </div>
 </template>
 
 <script>
 import UserService from "../services/UserService"
 
-
 export default {
-    name: 'Signup',
+    name: 'Login',
     data(){
         return{
-            name: '',
             email: '',
             password: '',
         }
     },
     methods: {
-        signUp(){
+        login(){
             let params = {
-                name: this.name,
                 email: this.email,
                 password: this.password
             }
-            UserService.createUser(params)
+            UserService.login(params)
                 .then(() => {
                     this.resetParameter()
-                    this.$router.push("login")
                 })
         },
         resetParameter(){
-            this.name = '',
             this.email = '',
             this.password = ''
         }
-    },
-    computed: {
-
     }
 }
 </script>
-
-<style scoped>
-.eye {
-    position: absolute;
-    left: 10px;
-}
-</style>

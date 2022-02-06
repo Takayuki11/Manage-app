@@ -1,29 +1,52 @@
 package com.example.manage.controllers;
 
+import com.example.manage.JWTProvider;
+import com.example.manage.service.UserService;
 import com.example.manage.entity.User;
-import com.example.manage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    @Autowired
-    public UserRepository userRepository;
 
-    @Autowired
+    public UserService userService;
     public PasswordEncoder passwordEncoder;
+    public JWTProvider provider;
 
-    @PostMapping("/create")
-    public void createUser(@RequestBody User user, HttpServletResponse response){
+    @Autowired
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, JWTProvider provider){
+        this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
+        this.provider = provider;
+    }
+
+    @PostMapping("/signup")
+    public void signup(@RequestBody User user){
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        this.userService.save(user);
+    }
+
+    @PostMapping("/login")
+    public void login(@RequestBody User user, HttpServletResponse response){
+        User loginUser = this.userService.getUserByEmailWithPassword(user);
+
+        if(loginUser != null){
+            String token = this.provider.createToken(loginUser);
+            response.setHeader("Authorization", token);
+            response.setStatus(HttpStatus.OK.value());
+        } else {
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+            throw new UsernameNotFoundException("User Not Found");
+        }
     }
 }

@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Integer> {
     @Query(value = "SELECT * FROM tasks WHERE task_status = 'incomplete' ORDER BY sort_number ASC", nativeQuery = true)
-    public List<Task>findTasks();
+    public List<Task>findByTasks();
 
     @Query(value = "SELECT * FROM tasks WHERE task_status = 'processing' ORDER BY sort_number ASC", nativeQuery = true)
-    public List<Task>findProcessingTasks();
+    public List<Task>findByProcessingTasks();
 
     @Query(value = "SELECT * FROM tasks WHERE task_status = 'completed' ORDER BY sort_number ASC", nativeQuery = true)
-    public List<Task>findCompletedTasks();
+    public List<Task>findByCompletedTasks();
 }

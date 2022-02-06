@@ -1,4 +1,4 @@
-package com.example.manage.Service;
+package com.example.manage.service;
 
 import com.example.manage.TaskList;
 import com.example.manage.entity.Task;
@@ -20,17 +20,17 @@ public class TaskService {
     TaskList taskList = new TaskList();
 
     public List<Task> getTasks(){
-        taskList.incompleteTaskList = taskRepository.findTasks();
+        taskList.incompleteTaskList = taskRepository.findByTasks();
         return taskList.incompleteTaskList;
     }
 
     public List<Task> getProcessingTask(){
-        taskList.processingTaskList = taskRepository.findProcessingTasks();
+        taskList.processingTaskList = taskRepository.findByProcessingTasks();
         return taskList.processingTaskList;
     }
 
     public List<Task> getCompletedTask(){
-        taskList.completedTaskList = taskRepository.findCompletedTasks();
+        taskList.completedTaskList = taskRepository.findByCompletedTasks();
         return taskList.completedTaskList;
     }
 
