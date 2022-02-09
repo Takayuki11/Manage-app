@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <h1>ログイン</h1>
+        <p class="validationMassage"></p>
         <v-text-field label="メールアドレス" v-model="email"></v-text-field>
         <v-text-field label="パスワード" type="password" v-model="password"></v-text-field>
 
@@ -9,7 +10,7 @@
 </template>
 
 <script>
-import UserService from "../services/UserService"
+import store from '../store/index'
 
 export default {
     name: 'Login',
@@ -25,9 +26,10 @@ export default {
                 email: this.email,
                 password: this.password
             }
-            UserService.login(params)
-                .then(() => {
-                    this.resetParameter()
+            const self = this;
+            store.dispatch("login", params).then((response) => {
+                    self.resetParameter()
+                    self.$router.push("tasks")
                 })
         },
         resetParameter(){

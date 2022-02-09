@@ -47,8 +47,8 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<Task> update(@PathVariable int id, @RequestBody Task task){
-        Optional<Task> target = taskService.getTask(id);
+    public ResponseEntity<Task> update(@RequestBody Task task){
+        Optional<Task> target = taskService.getTask(task.getId());
         if(target.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

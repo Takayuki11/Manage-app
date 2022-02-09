@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import TaskService from '../services/TaskService'
+import store from '../store/index'
 import draggable from 'vuedraggable'
 
 export default{
@@ -137,61 +137,58 @@ export default{
     },
     methods: {
         getIncompleteTasks(){
-            TaskService.getTasks().then((response) => {
+            store.dispatch("getTasks").then((response) => {
                 this.incompleteTasks = response.data
-            });
+            })
         },
         getProcessingTasks(){
-            TaskService.getProcessingTasks().then((response) => {
+            store.dispatch("getProcessingTasks").then((response) => {
                 this.processingTasks = response.data
             })
         },
         getCompletedTasks(){
-            TaskService.getCompletedTasks().then((response) => {
+            store.dispatch("getCompletedTasks").then((response) => {
                 this.completedTasks = response.data
             })
         },
         getTask(taskId){
-            const vm = this;
-            TaskService.getTask(taskId).then((response) => {
-                vm.task = response.data
+            const self = this;
+            store.dispatch("getTask", taskId).then((response) => {
+                self.task = response.data
             })
         },
         createTask(){
-            const vm = this;
+            const self = this;
             let params = {
                 taskName: this.task.taskName,
                 taskNote: this.task.taskNote
             }
-            TaskService.createTask(params)
-                .then(() => {
-                    vm.getIncompleteTasks()
-                    vm.resetTaskData()
-                    vm.createDialog = false
-                }).catch(() =>{
-
-                })
+            store.dispatch(params).then(() => {
+                self.getIncompleteTasks()
+                    self.resetTaskData()
+                    self.createDialog = false
+            })
         },
         editTask(taskId){
-            const vm = this
-            TaskService.editTask(taskId, this.task)
-                .then(() => {
-                    vm.editDialog = false
-                    vm.getIncompleteTasks()
-                    vm.getProcessingTasks()
-                    vm.getCompletedTasks()
-                }).catch(() => {
-
-                })
+            const self = this
+            let params = {
+                taskId: taskId,
+                task: this.task
+            }
+            store.dispatch("editTask", params).then(() => {
+                self.editDialog = false
+                self.getIncompleteTasks()
+                self.getProcessingTasks()
+                self.getCompletedTasks()
+            })
         },
         deleteTask(taskId){
-            const getTasks = this.getIncompleteTasks;
-            TaskService.deleteTask(taskId)
-                .then(() =>{
-                    getTasks()
-                }).catch(() => {
-
-                })
+            const self = this
+            store.dispatch("deleteTask", taskId).then(() => {
+                self.getIncompleteTasks()
+                self.getProcessingTasks()
+                self.getCompletedTasks()
+            })
         },
         openCreateDialog(){
             this.createDialog = true
@@ -226,13 +223,18 @@ export default{
             for(let i = 0; i < event.from.childNodes.length; i++){
                 fromParams.push(Number(event.from.childNodes[i].id))
             }
+
+            let params = {
+                fromParams: fromParams,
+                toParams: toParams,
+                task: this.task
+            }
             
-            const vm = this
-            TaskService.sortTasksWithSchedule(fromParams, toParams, this.task)
-            .then(() => {
-                vm.getIncompleteTasks()
-                vm.getProcessingTasks()
-                vm.getCompletedTasks()
+            const self = this
+            store.dispatch("sortTasksWithSchedule", params).then(() => {
+                self.getIncompleteTasks()
+                self.getProcessingTasks()
+                self.getCompletedTasks()
             })
        }
     },

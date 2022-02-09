@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import UserService from "../services/UserService"
+import store from '../store/index'
 
 
 export default {
@@ -29,11 +29,10 @@ export default {
                 email: this.email,
                 password: this.password
             }
-            UserService.createUser(params)
-                .then(() => {
-                    this.resetParameter()
-                    this.$router.push("login")
-                })
+            const self = this;
+            store.dispatch("signup", params).then(() => {
+                self.$router.push("login")
+            })
         },
         resetParameter(){
             this.name = '',
