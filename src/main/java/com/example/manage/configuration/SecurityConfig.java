@@ -16,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
-
 @Configuration
 @EnableWebSecurity
 @ServletComponentScan("com.example.manage")
@@ -32,7 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/", "/signup", "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -56,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public FilterRegistrationBean jwtAuthenticationFilter(){
         FilterRegistrationBean<JWTAuthenticationFilter> bean = new FilterRegistrationBean<JWTAuthenticationFilter>();
         bean.setFilter(new JWTAuthenticationFilter(this.provider));
-        bean.addUrlPatterns("/tasks");
+        bean.addUrlPatterns("/*");
         bean.setOrder(1);
         return bean;
     }

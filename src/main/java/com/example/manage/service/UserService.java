@@ -25,8 +25,7 @@ public class UserService {
 
     public User getUserByEmailWithPassword(User user){
         User loginUser = userRepository.findByEmail(user.getEmail());
-        System.out.println(loginUser.getEmail());
-        System.out.println(loginUser);
+
         if (passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
             return loginUser;
         }

@@ -43,6 +43,7 @@ public class TaskController {
 
     @PostMapping("/tasks/create")
     public void create(@RequestBody Task task){
+        task.setTaskStatus("incomplete");
         this.taskService.save(task);
     }
 
