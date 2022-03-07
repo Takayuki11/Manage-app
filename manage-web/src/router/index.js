@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Task from '../views/Task.vue'
+import store from '../store/index'
 
 Vue.use(VueRouter)
 
@@ -11,7 +12,8 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: { requiresAuth: false }
   },
   // {
   //   path: '/about',
@@ -24,17 +26,20 @@ const routes = [
   {
     path: '/signup',
     name: 'Signup',
-    component: Signup
+    component: Signup,
+    meta: { requiresAuth: false }
   },
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: { requiresAuth: false }
   },
   {
     path: '/tasks',
     name: 'Task',
-    component: Task
+    component: Task,
+    meta: { requiresAuth: true }
   },
   {
     path: '*',
@@ -46,6 +51,23 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.matched.some((record) => record.meta.requiresAuth)) {
+      if(store.state.user.isLoggedIn != true){
+        next({
+          path: '/login',
+          // query: {
+          //   redirect: to.fullPath,
+          // }
+        })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -27,7 +27,7 @@ export default {
                 password: this.password
             }
             const self = this;
-            store.dispatch("login", params).then((response) => {
+            store.dispatch("login", params).then(() => {
                     self.resetParameter()
                     self.$router.push("tasks")
                 })

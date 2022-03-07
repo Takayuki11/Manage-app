@@ -161,12 +161,14 @@ export default{
             const self = this;
             let params = {
                 taskName: this.task.taskName,
-                taskNote: this.task.taskNote
+                taskNote: this.task.taskNote,
+                userId: store.getters.getToken.sub
             }
-            store.dispatch(params).then(() => {
+            console.log(store.getters.getToken.sub)
+            store.dispatch("createTask",params).then(() => {
                 self.getIncompleteTasks()
-                    self.resetTaskData()
-                    self.createDialog = false
+                self.resetTaskData()
+                self.createDialog = false
             })
         },
         editTask(taskId){
@@ -236,12 +238,16 @@ export default{
                 self.getProcessingTasks()
                 self.getCompletedTasks()
             })
-       }
+       },
     },
     created() {
         this.getIncompleteTasks()
         this.getProcessingTasks()
         this.getCompletedTasks()
+
+        // Vuex
+        const token = localStorage.getItem("JWTToken");
+        store.commit("decodeJWT", token)
     }
 }
 </script>
