@@ -19,7 +19,7 @@ public class JWTProvider {
     private static final long TOKEN_VALID_DURATION = 1000L * 60L * 60L;
 
     public String createToken(User user) {
-        Claims claim = Jwts.claims().setSubject(user.getId().toString());
+        Claims claim = Jwts.claims().setSubject(String.valueOf(user.getId()));
         claim.put("name", user.getName());
         claim.put("email", user.getEmail());
 //        claim.put("role", user.getRole());
