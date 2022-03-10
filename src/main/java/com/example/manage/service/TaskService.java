@@ -14,32 +14,35 @@ import java.util.Optional;
 @Transactional
 public class TaskService {
 
-    @Autowired
-    public TaskRepository taskRepository;
+    public final TaskRepository taskRepository;
+    public TaskList taskList = new TaskList();
 
-    TaskList taskList = new TaskList();
+    @Autowired
+    public TaskService(TaskRepository repository){
+        this.taskRepository = repository;
+    }
 
     public List<Task> getTasks(){
-        taskList.incompleteTaskList = taskRepository.findByTasks();
-        return taskList.incompleteTaskList;
+        this.taskList.incompleteTaskList = taskRepository.findByTasks();
+        return this.taskList.incompleteTaskList;
     }
 
     public List<Task> getProcessingTask(){
-        taskList.processingTaskList = taskRepository.findByProcessingTasks();
-        return taskList.processingTaskList;
+        this.taskList.processingTaskList = taskRepository.findByProcessingTasks();
+        return this.taskList.processingTaskList;
     }
 
     public List<Task> getCompletedTask(){
-        taskList.completedTaskList = taskRepository.findByCompletedTasks();
-        return taskList.completedTaskList;
+        this.taskList.completedTaskList = taskRepository.findByCompletedTasks();
+        return this.taskList.completedTaskList;
     }
 
     public Optional<Task> getTask(int id){
-        return taskRepository.findById(id);
+        return this.taskRepository.findById(id);
     }
 
     public void save(Task task){
-        taskRepository.save(task);
+        this.taskRepository.save(task);
     }
 
     public void sortTasks(List<Integer> fromIds,List<Integer> toIds){
@@ -48,35 +51,33 @@ public class TaskService {
                 Optional<Task> target = taskRepository.findById(toIds.get(i));
                 Task task = target.get();
                 task.setSortNumber(i + 1);
-                taskRepository.save(task);
+                this.taskRepository.save(task);
             }
         } else {
             for(int i = 0; i < toIds.size(); i++){
                 Optional<Task> target = taskRepository.findById(toIds.get(i));
                 Task task = target.get();
                 task.setSortNumber(i + 1);
-                taskRepository.save(task);
+                this.taskRepository.save(task);
             }
             for (int i = 0; i < fromIds.size(); i++){
                 Optional<Task> target = taskRepository.findById(fromIds.get(i));
                 Task task = target.get();
                 task.setSortNumber(i + 1);
-                taskRepository.save(task);
+                this.taskRepository.save(task);
             }
         }
     }
 
     public void delete(int id){
-        taskRepository.deleteById(id);
+        this.taskRepository.deleteById(id);
     }
 
     public void deleteOnlyScheduledTasks(){
-        for(Task task : taskList.completedTaskList){
+        for(Task task : this.taskList.completedTaskList){
             if(task.isScheduleStatus() == true){
-                taskRepository.delete(task);
+                this.taskRepository.delete(task);
             }
         }
     }
-
-
 }

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    public UserRepository userRepository;
-    public PasswordEncoder passwordEncoder;
+    public final UserRepository userRepository;
+    public final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder){
@@ -24,9 +24,9 @@ public class UserService {
     }
 
     public User getUserByEmailWithPassword(User user){
-        User loginUser = userRepository.findByEmail(user.getEmail());
+        User loginUser = this.userRepository.findByEmail(user.getEmail());
 
-        if (passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
+        if (this.passwordEncoder.matches(user.getPassword(), loginUser.getPassword())) {
             return loginUser;
         }
         return null;
