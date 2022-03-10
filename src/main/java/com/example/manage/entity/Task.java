@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 
 @Getter
@@ -29,6 +30,12 @@ public class Task {
     private int sortNumber;
     @Column(name = "schedule_status")
     private boolean scheduleStatus;
+    @Column(name = "coordinator")
+    private String coordinator;
+    @Column(name = "customers_company_id")
+    private int customersCompanyId;
+    @Column(name = "task_limit")
+    private Date taskLimit;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
