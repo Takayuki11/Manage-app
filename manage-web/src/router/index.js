@@ -5,6 +5,7 @@ import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Task from '../views/Task.vue'
 import store from '../store/index'
+import CompanySignup from '../views/CompanySignup' 
 
 Vue.use(VueRouter)
 
@@ -40,6 +41,12 @@ const routes = [
     name: 'Task',
     component: Task,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/company/signup',
+    name: 'Company-Signup',
+    component: CompanySignup,
+    meta: { requiresAuth: false }
   },
   {
     path: '*',

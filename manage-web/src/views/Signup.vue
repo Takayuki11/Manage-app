@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 >サインアップ</h1>
+        <h1>サインアップ</h1>
         <v-text-field label="名前" v-model="name"></v-text-field>
         <v-text-field label="メールアドレス" v-model="email"></v-text-field>
         <v-text-field label="パスワード" type="password" v-model="password"></v-text-field>
