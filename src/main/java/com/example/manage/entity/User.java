@@ -34,4 +34,12 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", insertable = false, updatable = false)
     private Company company;
+
+    public User(String name, String email, String password, String role, int companyId){
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.companyId = companyId;
+    }
 }

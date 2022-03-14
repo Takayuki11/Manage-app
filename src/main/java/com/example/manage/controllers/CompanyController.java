@@ -27,16 +27,9 @@ public class CompanyController {
 
     @PostMapping("/create")
     public void create(@RequestBody JsonData data){
-//        明日質問する　データの型とカンパニーID
-        Company company = new Company();
-        company.setCompanyName(data.getCompanyName());
+        Company company = new Company(data.getCompanyName());
         this.companyService.save(company);
-        User user = new User();
-        user.setName(data.getName());
-        user.setEmail(data.getEmail());
-        user.setPassword(data.getPassword());
-        user.setCompanyId(company.getId());
-        user.setRole("master");
+        User user = new User(data.getName(), data.getEmail(), data.getPassword(), "master", company.getId());
         this.userService.save(user);
     }
 }

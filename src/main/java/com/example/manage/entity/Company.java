@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "companies")
 @Entity
 public class Company {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -25,4 +24,8 @@ public class Company {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "company")
     private List<User> userList;
+
+    public Company(String companyName){
+        this.companyName = companyName;
+    }
 }
