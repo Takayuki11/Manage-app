@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Signup from '../views/Signup.vue'
 import Login from '../views/Login.vue'
 import Task from '../views/Task.vue'
 import store from '../store/index'
-import CompanySignup from '../views/CompanySignup' 
+import CompanySignup from '../views/CompanySignup'
+import Dashboard from '../views/Dashboard'
 
 Vue.use(VueRouter)
 
@@ -25,16 +25,16 @@ const routes = [
   //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   // },
   {
-    path: '/signup',
-    name: 'Signup',
-    component: Signup,
-    meta: { requiresAuth: false }
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login,
     meta: { requiresAuth: false }
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true }
   },
   {
     path: '/tasks',
@@ -44,13 +44,13 @@ const routes = [
   },
   {
     path: '/company/signup',
-    name: 'Company-Signup',
+    name: 'CompanySignup',
     component: CompanySignup,
     meta: { requiresAuth: false }
   },
   {
     path: '*',
-    redirect: '/'
+    redirect: '/',
   }
 ]
 

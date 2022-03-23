@@ -29,7 +29,7 @@ export default {
             const self = this;
             store.dispatch("login", params).then(() => {
                     self.resetParameter()
-                    self.$router.push("tasks")
+                    self.$router.push("/dashboard")
                 })
         },
         resetParameter(){

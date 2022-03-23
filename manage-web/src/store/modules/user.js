@@ -44,7 +44,12 @@ export default {
                     const token = response.data;
                     localStorage.setItem("JWTToken", token);
                     commit("onLoginSuccess")
+                    commit("decodeJWT", token)
                 })
+        },
+
+        registerEmployee(_, params){
+            return axios.post(USER_API_BASE_URL + '/create', params)
         }
     }
 }

@@ -28,12 +28,6 @@ export default {
     methods: {
         registerCompany(){
             const self = this
-            // let params = {
-            //     companyName: this.company.companyName,
-            //     name: this.user.name,
-            //     email: this.user.email,
-            //     password: this.user.password,
-            // }
             let params = {
                 companyName: this.company.companyName,
                 name: this.user.name,
@@ -41,6 +35,7 @@ export default {
                 password: this.user.password,
             }
             store.dispatch("saveCompany", params).then(() => {
+                self.$router.push("/login")
                 self.company.companyName = ''
                 self.user.name = ''
                 self.user.email = ''
