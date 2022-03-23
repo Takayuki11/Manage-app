@@ -1,6 +1,7 @@
 package com.example.manage.controllers;
 
 import com.example.manage.JWTProvider;
+import com.example.manage.configuration.dto.UserSignUpRequest;
 import com.example.manage.service.UserService;
 import com.example.manage.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,12 +33,6 @@ public class UserController {
         this.provider = provider;
     }
 
-    @PostMapping("/signup")
-    public void signup(@RequestBody User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        this.userService.save(user);
-    }
-
     @PostMapping("/login")
     public String login(@RequestBody User user, HttpServletResponse response, HttpServletRequest request){
         User loginUser = this.userService.getUserByEmailWithPassword(user);
@@ -52,5 +46,12 @@ public class UserController {
             response.setStatus(HttpStatus.NO_CONTENT.value());
             throw new UsernameNotFoundException("User Not Found");
         }
+    }
+
+    @PostMapping("/create")
+    public void create(@RequestBody UserSignUpRequest request){
+        String password = this.passwordEncoder.encode(request.getPassword());
+        User user = new User(request.getName(), request.getEmail(), password, request.getRole(), request.getCompanyId());
+        this.userService.save(user);
     }
 }

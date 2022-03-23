@@ -25,7 +25,7 @@ public class User {
     private String password;
     @Column
     private String role;
-    @Column(name = "company_id")
+    @Column(name = "company_id", nullable = false)
     private int companyId;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Task> taskList;

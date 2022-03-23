@@ -1,4 +1,4 @@
-package com.example.manage;
+package com.example.manage.configuration.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class JsonData {
+public class MasterUserSignUpRequest {
     private String companyName;
     private String name;
     private String email;

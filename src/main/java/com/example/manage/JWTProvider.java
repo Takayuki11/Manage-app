@@ -22,7 +22,8 @@ public class JWTProvider {
         Claims claim = Jwts.claims().setSubject(String.valueOf(user.getId()));
         claim.put("name", user.getName());
         claim.put("email", user.getEmail());
-//        claim.put("role", user.getRole());
+        claim.put("role", user.getRole());
+        claim.put("companyId", user.getCompanyId());
 
         Date iat = new Date();
         Date exp = new Date(iat.getTime() + TOKEN_VALID_DURATION);
